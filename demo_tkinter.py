@@ -1,10 +1,11 @@
+import tkinter
 from tkinter import *
 from tkinter import ttk
 
-from data_func import func_modul_1
-from my import App
+from data_func import func_modul_1, func_modul_2
 
 
+# Функция расчета наличия/отсутствия технической возможности предотвратить наезд на пешехода
 def command_print():
 
     global run_man
@@ -23,39 +24,32 @@ def command_print():
     distance_man = float(text_distance_man.get())
     alfa = float(text_alfa.get())
     if run_man.get() == modul_1:
+        # Функция расчета тех. возможности когда пешеход удаляется и строит график перемещений
         result = func_modul_1(speed_car=speed_car, speed_man=speed_man, t_1=t_1, t_2=t_2, t_3=t_3,
                               car_deceleration=car_deceleration, length_car=length_car,
                               width_car=width_car, distance_from_site=distance_from_site, l_up=l_up,
                               distance_car=distance_car, distance_man=distance_man, alfa=alfa)
     elif run_man.get() == modul_2:
-        pass
-    answer_lbl = ttk.Label(master=frame_4, text=result[0], background="red")
-    answer_lbl.grid(column=0, row=0, sticky="we")
-    colums = ("time", "Sa", "Xi", "Yi", "l_up")
-    tree = ttk.Treeview(master=frame_5, columns=colums, show="headings")
-    tree.pack(fill=BOTH, expand=1)
-    tree.heading("time", text="Ti")
-    tree.heading("Sa", text="Sa")
-    tree.heading("Xi", text="ΔXi")
-    tree.heading("Yi", text="ΔYi")
-    tree.heading("l_up", text="lуп")
-
-    tree.column("#1", stretch=NO, width=70)
-    tree.column("#2", stretch=NO, width=70)
-    tree.column("#3", stretch=NO, width=70)
-    tree.column("#4", stretch=NO, width=70)
-    tree.column("#5", stretch=NO, width=70)
-
-    value = zip(result[1], result[2], result[3], result[4], result[5])
+        result = func_modul_2(speed_car=speed_car, speed_man=speed_man, t_1=t_1, t_2=t_2, t_3=t_3,
+                              car_deceleration=car_deceleration, length_car=length_car,
+                              width_car=width_car, distance_from_site=distance_from_site, l_up=l_up,
+                              distance_car=distance_car, distance_man=distance_man, alfa=alfa)
+    answer_lbl['text'] = result[0]
+    tree.delete(*tree.get_children())
+    value = zip(result[1], result[2], result[3], result[4], result[5], result[6])
     for i in value:
         tree.insert('', END, values=i)
+    image_grafik.delete("all")
+    img_2 = tkinter.PhotoImage(file="saved_figure.png")
+    image_grafik.create_image(0, 0, anchor="nw", image=img_2)
+    image_grafik.image = img_2
 
 
 window = Tk()
 window.title("Приложение DTP-Expert (альфа-версия)")
-window.geometry("1024x640")
+window.geometry("1100x720")
 
-
+# Блок исходных данных
 frame_1 = ttk.Frame(relief=SUNKEN, borderwidth=5)
 new_data = ttk.Label(master=frame_1, text="Исходные данные:")
 new_data.grid(column=1, row=0)
@@ -167,6 +161,7 @@ symbol_alfa.grid(column=1, row=13)
 text_alfa = ttk.Spinbox(master=frame_1, width=10, from_=0.00, to=300, textvariable=spinbox_var_alfa)
 text_alfa.grid(column=2, row=13)
 
+# Блок выбора направления движения пешехода
 frame_2 = ttk.Frame(relief=SUNKEN, borderwidth=5)
 lbl_direction_of_movement = ttk.Label(master=frame_2, text="Направление движения пешехода")
 lbl_direction_of_movement.grid(column=0, row=0, sticky=N)
@@ -178,24 +173,50 @@ btn_2 = ttk.Radiobutton(master=frame_2, text="Пешеход приближае�
 btn_1.grid(column=0, row=1, sticky=NW)
 btn_2.grid(column=0, row=2, sticky=NW)
 
+# Блок кнопки запуска расчета и вывода результате
 frame_3 = ttk.Frame(relief=SUNKEN, borderwidth=5)
 btn_start = ttk.Button(master=frame_2, text="Расчет", command=command_print)
 btn_start.grid(column=0, row=3, sticky=N)
+answer_lbl = ttk.Label(master=frame_2, text='Здесь будет результат расчета', background="red", width=58)
+answer_lbl.grid(column=0, row=4, sticky="we")
 
+# Блок вывода построенного графика перемещений
 frame_4 = ttk.Frame(relief=SUNKEN, borderwidth=5)
+image_grafik = tkinter.Canvas(master=frame_4, bg='white', height=384, width=512)
+image_grafik.pack()
+
+# Блок вывода таблицы исходных данных на основании которых построен график
 frame_5 = ttk.Frame(relief=SUNKEN, borderwidth=5)
-# image_grafik = tkinter.Canvas(master=frame_4, bg='white', height=384, width=512)
-# img_1 = tkinter.PhotoImage(file="new_figure.png")
-# img_2 = tkinter.PhotoImage(file="saved_figure.png")
-# image = image_grafik.create_image(0, 0, anchor="nw", image=img_1)
-# image_grafik.grid(column=0, row=1, sticky="we")
+# определяем столбцы
+columns = ("time", "speed", "Sa", "Xi", "Yi", "l_up")
+
+tree = ttk.Treeview(master=frame_5, columns=columns, show="headings")
+tree.grid(column=0, row=0, sticky="nsew")
+# определяем заголовки
+tree.heading("time", text="Ti")
+tree.heading("speed", text="Va")
+tree.heading("Sa", text="Sa")
+tree.heading("Xi", text="ΔXi")
+tree.heading("Yi", text="ΔYi")
+tree.heading("l_up", text="lуп")
+
+tree.column("#1", stretch=NO, width=70)
+tree.column("#2", stretch=NO, width=70)
+tree.column("#3", stretch=NO, width=70)
+tree.column("#4", stretch=NO, width=70)
+tree.column("#5", stretch=NO, width=70)
+tree.column("#6", stretch=NO, width=70)
+# добавляем вертикальную прокрутку
+scrollbar = ttk.Scrollbar(master=frame_5, orient=VERTICAL, command=tree.yview)
+tree.configure(yscroll=scrollbar.set)
+scrollbar.grid(row=0, column=1, sticky="ns")
 
 
+# Компоновка блоков в окне
 frame_1.grid(column=0, row=0, padx=5, pady=5, sticky=NW)
 frame_2.grid(column=1, row=0, padx=5, pady=5, sticky=NW)
 frame_3.grid(column=1, row=1, padx=5, pady=5, rowspan=1)
 frame_4.grid(column=0, row=1, padx=5, pady=5, sticky='we')
-frame_5.grid(column=1, row=1, padx=5, pady=5, sticky='we', rowspan=2)
-
+frame_5.grid(column=1, row=1, padx=5, pady=5, sticky='nw', rowspan=2)
 
 window.mainloop()
