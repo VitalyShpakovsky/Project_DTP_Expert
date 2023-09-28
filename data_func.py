@@ -265,6 +265,14 @@ def command_exit():
     sys.exit(0)
 
 
+def click_man_exit():
+    os.system('python modul_man_exit.py')
+
+
+def click_speed_car():
+    os.system('python modul_speed_car.py')
+
+
 # func_modul_1(speed_car=60, speed_man=7, t_1=0.6, t_2=0.2, t_3=0.4,
 #                               car_deceleration=5, length_car=4,
 #                               width_car=1.7, distance_from_site=1, l_up=1,
