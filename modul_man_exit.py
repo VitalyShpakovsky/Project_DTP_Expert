@@ -2,19 +2,18 @@ import tkinter
 from tkinter import *
 from tkinter import ttk
 
-from data_func import func_modul_1, func_modul_2
+from data_func import func_modul_1, func_modul_2, command_exit
 
 
 # Функция расчета наличия/отсутствия технической возможности предотвратить наезд на пешехода
 def command_print():
 
     global run_man
-    global frame_5
     speed_car = float(text_speed_car.get())
     speed_man = float(text_speed_man.get())
-    t_1 = float(text_t_1.get())
-    t_2 = float(text_t_2.get())
-    t_3 = float(text_t_3.get())
+    time_1 = float(text_time_1.get())
+    time_2 = float(text_time_2.get())
+    time_3 = float(text_time_3.get())
     car_deceleration = float(text_car_deceleration.get())
     length_car = float(text_length_car.get())
     width_car = float(text_width_car.get())
@@ -25,12 +24,13 @@ def command_print():
     alfa = float(text_alfa.get())
     if run_man.get() == modul_1:
         # Функция расчета тех. возможности когда пешеход удаляется и строит график перемещений
-        result = func_modul_1(speed_car=speed_car, speed_man=speed_man, t_1=t_1, t_2=t_2, t_3=t_3,
+        result = func_modul_1(speed_car=speed_car, speed_man=speed_man, time_1=time_1, time_2=time_2, time_3=time_3,
                               car_deceleration=car_deceleration, length_car=length_car,
                               width_car=width_car, distance_from_site=distance_from_site, l_up=l_up,
                               distance_car=distance_car, distance_man=distance_man, alfa=alfa)
     elif run_man.get() == modul_2:
-        result = func_modul_2(speed_car=speed_car, speed_man=speed_man, t_1=t_1, t_2=t_2, t_3=t_3,
+        # Функция расчета тех. возможности когда пешеход приближается и строит график перемещений
+        result = func_modul_2(speed_car=speed_car, speed_man=speed_man, time_1=time_1, time_2=time_2, time_3=time_3,
                               car_deceleration=car_deceleration, length_car=length_car,
                               width_car=width_car, distance_from_site=distance_from_site, l_up=l_up,
                               distance_car=distance_car, distance_man=distance_man, alfa=alfa)
@@ -39,21 +39,23 @@ def command_print():
     value = zip(result[1], result[2], result[3], result[4], result[5], result[6])
     for i in value:
         tree.insert('', END, values=i)
-    image_grafik.delete("all")
+    image_plot.delete("all")
     img_2 = tkinter.PhotoImage(file="saved_figure.png")
-    image_grafik.create_image(0, 0, anchor="nw", image=img_2)
-    image_grafik.image = img_2
+    image_plot.create_image(0, 0, anchor="nw", image=img_2)
+    image_plot.image = img_2
 
 
+# Создание окна программы
 window = Tk()
-window.title("Приложение DTP-Expert (альфа-версия)")
-window.geometry("1100x720")
+window.title("Выход пешехода из полосы движения ТС (альфа-версия)")
+window.geometry("1105x720+200+30")
 
 # Блок исходных данных
 frame_1 = ttk.Frame(relief=SUNKEN, borderwidth=5)
 new_data = ttk.Label(master=frame_1, text="Исходные данные:")
 new_data.grid(column=1, row=0)
 
+# Установка значений по умолчанию
 spinbox_var_speed_car = StringVar(value='0.00')
 spinbox_var_speed_man = StringVar(value='0.00')
 spinbox_var_t_1 = StringVar(value='0.00')
@@ -82,26 +84,26 @@ symbol_speed_man.grid(column=1, row=2)
 text_speed_man = ttk.Spinbox(master=frame_1, width=10, from_=0.00, to=300, textvariable=spinbox_var_speed_man)
 text_speed_man.grid(column=2, row=2)
 
-lbl_t_1 = ttk.Label(master=frame_1, text="Время реакции водителя в данной дорожной ситуации, с")
-lbl_t_1.grid(column=0, row=3)
-symbol_t_1 = ttk.Label(master=frame_1, text="t1")
-symbol_t_1.grid(column=1, row=3)
-text_t_1 = ttk.Spinbox(master=frame_1, width=10, from_=0.00, to=300, textvariable=spinbox_var_t_1)
-text_t_1.grid(column=2, row=3)
+lbl_time_1 = ttk.Label(master=frame_1, text="Время реакции водителя в данной дорожной ситуации, с")
+lbl_time_1.grid(column=0, row=3)
+symbol_time_1 = ttk.Label(master=frame_1, text="t1")
+symbol_time_1.grid(column=1, row=3)
+text_time_1 = ttk.Spinbox(master=frame_1, width=10, from_=0.00, to=300, textvariable=spinbox_var_t_1)
+text_time_1.grid(column=2, row=3)
 
-lbl_t_2 = ttk.Label(master=frame_1, text="Время запаздывания срабатывания тормозного привода автомобиля, с")
-lbl_t_2.grid(column=0, row=4)
-symbol_t_2 = ttk.Label(master=frame_1, text="t2")
-symbol_t_2.grid(column=1, row=4)
-text_t_2 = ttk.Spinbox(master=frame_1, width=10, from_=0.00, to=300, textvariable=spinbox_var_t_2)
-text_t_2.grid(column=2, row=4)
+lbl_time_2 = ttk.Label(master=frame_1, text="Время запаздывания срабатывания тормозного привода автомобиля, с")
+lbl_time_2.grid(column=0, row=4)
+symbol_time_2 = ttk.Label(master=frame_1, text="t2")
+symbol_time_2.grid(column=1, row=4)
+text_time_2 = ttk.Spinbox(master=frame_1, width=10, from_=0.00, to=300, textvariable=spinbox_var_t_2)
+text_time_2.grid(column=2, row=4)
 
-lbl_t_3 = ttk.Label(master=frame_1, text="Время нарастания замедления автомобиля, с")
-lbl_t_3.grid(column=0, row=5)
-symbol_t_3 = ttk.Label(master=frame_1, text="t3")
-symbol_t_3.grid(column=1, row=5)
-text_t_3 = ttk.Spinbox(master=frame_1, width=10, from_=0.00, to=300, textvariable=spinbox_var_t_3)
-text_t_3.grid(column=2, row=5)
+lbl_time_3 = ttk.Label(master=frame_1, text="Время нарастания замедления автомобиля, с")
+lbl_time_3.grid(column=0, row=5)
+symbol_time_3 = ttk.Label(master=frame_1, text="t3")
+symbol_time_3.grid(column=1, row=5)
+text_time_3 = ttk.Spinbox(master=frame_1, width=10, from_=0.00, to=300, textvariable=spinbox_var_t_3)
+text_time_3.grid(column=2, row=5)
 
 lbl_car_deceleration = ttk.Label(master=frame_1, text="Замедление автомобиля, м/с^2")
 lbl_car_deceleration.grid(column=0, row=6)
@@ -177,21 +179,23 @@ btn_2.grid(column=0, row=2, sticky=NW)
 frame_3 = ttk.Frame(relief=SUNKEN, borderwidth=5)
 btn_start = ttk.Button(master=frame_2, text="Расчет", command=command_print)
 btn_start.grid(column=0, row=3, sticky=N)
-answer_lbl = ttk.Label(master=frame_2, text='Здесь будет результат расчета', background="red", width=58)
+answer_lbl = ttk.Label(master=frame_2, text='Здесь будет результат расчета', foreground="red", width=73,
+                       wraplength=200, anchor='center', justify=CENTER)
 answer_lbl.grid(column=0, row=4, sticky="we")
 
 # Блок вывода построенного графика перемещений
 frame_4 = ttk.Frame(relief=SUNKEN, borderwidth=5)
-image_grafik = tkinter.Canvas(master=frame_4, bg='white', height=384, width=512)
-image_grafik.pack()
+image_plot = tkinter.Canvas(master=frame_4, bg='white', height=384, width=512)
+image_plot.pack()
 
 # Блок вывода таблицы исходных данных на основании которых построен график
 frame_5 = ttk.Frame(relief=SUNKEN, borderwidth=5)
 # определяем столбцы
 columns = ("time", "speed", "Sa", "Xi", "Yi", "l_up")
-
+# Создаем таблицу вывода данных расчета
 tree = ttk.Treeview(master=frame_5, columns=columns, show="headings")
 tree.grid(column=0, row=0, sticky="nsew")
+
 # определяем заголовки
 tree.heading("time", text="Ti")
 tree.heading("speed", text="Va")
@@ -206,16 +210,20 @@ tree.column("#3", stretch=NO, width=70)
 tree.column("#4", stretch=NO, width=70)
 tree.column("#5", stretch=NO, width=70)
 tree.column("#6", stretch=NO, width=70)
+
 # добавляем вертикальную прокрутку
 scrollbar = ttk.Scrollbar(master=frame_5, orient=VERTICAL, command=tree.yview)
-tree.configure(yscroll=scrollbar.set)
+tree.configure(yscrollcommand=scrollbar.set)
 scrollbar.grid(row=0, column=1, sticky="ns")
+
+btn_stop = ttk.Button(master=frame_5, text="Выход в главное меню", command=command_exit)
+btn_stop.grid(column=0, row=1, sticky=N)
 
 
 # Компоновка блоков в окне
-frame_1.grid(column=0, row=0, padx=5, pady=5, sticky=NW)
-frame_2.grid(column=1, row=0, padx=5, pady=5, sticky=NW)
-frame_3.grid(column=1, row=1, padx=5, pady=5, rowspan=1)
+frame_1.grid(column=0, row=0, padx=5, pady=5, sticky='nw')
+frame_2.grid(column=1, row=0, padx=5, pady=5, sticky='nswe')
+frame_3.grid(column=1, row=1, padx=5, pady=5, sticky='nswe')
 frame_4.grid(column=0, row=1, padx=5, pady=5, sticky='we')
 frame_5.grid(column=1, row=1, padx=5, pady=5, sticky='nw', rowspan=2)
 

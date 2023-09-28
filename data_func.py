@@ -1,10 +1,13 @@
+import os
+import sys
 from math import cos, sin, pi
 from matplotlib import pyplot as plt
 
 
-def func_modul_1(speed_car, speed_man, t_1, t_2, t_3,
-                 car_deceleration, length_car, width_car,
-                 distance_from_site, l_up, distance_car, distance_man, alfa):
+# Функция расчета тех. возможности когда пешеход удаляется и строит график перемещений
+def func_modul_1(speed_car: float, speed_man: float, time_1: float, time_2: float, time_3: float,
+                 car_deceleration: float, length_car: float, width_car: float,
+                 distance_from_site: float, l_up: float, distance_car: float, distance_man: float, alfa: float) -> list:
     print('Модуль 1')
     list_time_i = []
     list_speed_car = []
@@ -13,8 +16,8 @@ def func_modul_1(speed_car, speed_man, t_1, t_2, t_3,
     list_y_i = []
     list_l_up = []
     # Расчетные исходные данные
-    time_break = (t_1 + t_2 + (0.5 * t_3))
-    time_stop_car = round((t_1 + t_2 + (0.5 * t_3)) + ((speed_car / 3.6) / car_deceleration), 8)
+    time_break = (time_1 + time_2 + (0.5 * time_3))
+    time_stop_car = round((time_1 + time_2 + (0.5 * time_3)) + ((speed_car / 3.6) / car_deceleration), 8)
     print(time_stop_car)
     x_0 = round(distance_car - (distance_man * cos((alfa * pi) / 180)), 8)
     print(x_0)
@@ -51,7 +54,8 @@ def func_modul_1(speed_car, speed_man, t_1, t_2, t_3,
             distance_car_i = (speed_car_i / 3.6) * time_i
         else:
             speed_car_i = speed_car - (3.6 * car_deceleration * (time_i - time_break))
-            distance_car_i = ((speed_car / 3.6) * time_break) + ((speed_car ** 2 - speed_car_i ** 2) / (25.92 * car_deceleration))
+            distance_car_i = ((speed_car / 3.6) * time_break) + ((speed_car ** 2 - speed_car_i ** 2) /
+                                                                 (25.92 * car_deceleration))
         distance_man_i = (speed_man / 3.6) * time_i
         x_i = (x_0 + distance_man_i * cos((alfa * pi) / 180)) - distance_car_i
         y_i = y_0 + (distance_man_i * sin((alfa * pi) / 180))
@@ -83,7 +87,7 @@ def func_modul_1(speed_car, speed_man, t_1, t_2, t_3,
 
         plt.savefig('saved_figure.png', dpi=80)
         plt.clf()
-        result = [f"Водитель автомобиля\n имел техническую возможность\n предотвратить наезд на пешехода.",
+        result = [f"Водитель автомобиля имел техническую возможность предотвратить наезд на пешехода.",
                   list_time_i, list_speed_car, list_distance_car,
                   list_x_i, list_y_i, list_l_up]
         return result
@@ -100,11 +104,11 @@ def func_modul_1(speed_car, speed_man, t_1, t_2, t_3,
 
             plt.savefig('saved_figure.png', dpi=80)
             plt.clf()
-            result = [f"Водитель автомобиля не имел\n"
-                      f" техническую возможность предотвратить\n"
-                      f" наезд на пешехода, однако при своевременном\n"
-                      f" применение водителем мер к торможению\n"
-                      f"пешеход успевал покинуть полосу\n"
+            result = [f"Водитель автомобиля не имел"
+                      f" техническую возможность предотвратить"
+                      f" наезд на пешехода, однако при своевременном"
+                      f" применение водителем мер к торможению"
+                      f"пешеход успевал покинуть полосу"
                       f" движения автомобиля.",
                       list_time_i, list_speed_car, list_distance_car,
                       list_x_i, list_y_i, list_l_up]
@@ -122,13 +126,14 @@ def func_modul_1(speed_car, speed_man, t_1, t_2, t_3,
 
             plt.savefig('saved_figure.png', dpi=80)
             plt.clf()
-            result = [f"Водитель автомобиля не имел\n техническую возможность\n предотвратить наезд на пешехода",
+            result = [f"Водитель автомобиля не имел техническую возможность предотвратить наезд на пешехода",
                       list_time_i, list_speed_car, list_distance_car,
                       list_x_i, list_y_i, list_l_up]
             return result
 
 
-def func_modul_2(speed_car, speed_man, t_1, t_2, t_3,
+# Функция расчета тех. возможности когда пешеход приближается и строит график перемещений
+def func_modul_2(speed_car, speed_man, time_1, time_2, time_3,
                  car_deceleration, length_car, width_car,
                  distance_from_site, l_up, distance_car, distance_man, alfa):
 
@@ -140,8 +145,8 @@ def func_modul_2(speed_car, speed_man, t_1, t_2, t_3,
     list_y_i = []
     list_l_up = []
     # Расчетные исходные данные
-    time_break = (t_1 + t_2 + (0.5 * t_3))
-    time_stop_car = round((t_1 + t_2 + (0.5 * t_3)) + ((speed_car / 3.6) / car_deceleration), 8)
+    time_break = (time_1 + time_2 + (0.5 * time_3))
+    time_stop_car = round((time_1 + time_2 + (0.5 * time_3)) + ((speed_car / 3.6) / car_deceleration), 8)
     print(time_stop_car)
     x_0 = round(distance_car + (distance_man * cos((alfa * pi) / 180)), 8)
     print(x_0)
@@ -211,7 +216,7 @@ def func_modul_2(speed_car, speed_man, t_1, t_2, t_3,
 
         plt.savefig('saved_figure.png', dpi=80)
         plt.clf()
-        result = [f"Водитель автомобиля\n имел техническую возможность\n предотвратить наезд на пешехода.",
+        result = [f"Водитель автомобиля\n имел техническую возможность предотвратить наезд на пешехода.",
                   list_time_i, list_speed_car, list_distance_car,
                   list_x_i, list_y_i, list_l_up]
         return result
@@ -228,11 +233,11 @@ def func_modul_2(speed_car, speed_man, t_1, t_2, t_3,
 
             plt.savefig('saved_figure.png', dpi=80)
             plt.clf()
-            result = [f"Водитель автомобиля не имел\n"
-                      f" техническую возможность предотвратить\n"
-                      f" наезд на пешехода, однако при своевременном\n"
-                      f" применение водителем мер к торможению\n"
-                      f"пешеход успевал покинуть полосу\n"
+            result = [f"Водитель автомобиля не имел"
+                      f" техническую возможность предотвратить"
+                      f" наезд на пешехода, однако при своевременном"
+                      f" применение водителем мер к торможению"
+                      f"пешеход успевал покинуть полосу"
                       f" движения автомобиля.",
                       list_time_i, list_speed_car, list_distance_car,
                       list_x_i, list_y_i, list_l_up]
@@ -250,10 +255,14 @@ def func_modul_2(speed_car, speed_man, t_1, t_2, t_3,
 
             plt.savefig('saved_figure.png', dpi=80)
             plt.clf()
-            result = [f"Водитель автомобиля не имел\n техническую возможность\n предотвратить наезд на пешехода",
+            result = [f"Водитель автомобиля не имел техническую возможность предотвратить наезд на пешехода",
                       list_time_i, list_speed_car, list_distance_car,
                       list_x_i, list_y_i, list_l_up]
             return result
+
+
+def command_exit():
+    sys.exit(0)
 
 
 # func_modul_1(speed_car=60, speed_man=7, t_1=0.6, t_2=0.2, t_3=0.4,
